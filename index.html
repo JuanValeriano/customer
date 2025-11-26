@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DocSpot Odonto - Conectamos pacientes con odontólogos. Reserva citas dentales de último momento.">
+    <title>DocSpot Odonto | Tu Salud Dental No Puede Esperar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo">
+                <svg class="nav__logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.5 2 6 4.5 6 7.5C6 10 7.5 12 9 14C10.5 16 12 18 12 21C12 18 13.5 16 15 14C16.5 12 18 10 18 7.5C18 4.5 15.5 2 12 2Z" fill="currentColor"/>
+                </svg>
+                <span>DocSpot Odonto</span>
+            </a>
+            <ul class="nav__menu" id="nav-menu">
+                <li><a href="#inicio" class="nav__link">Inicio</a></li>
+                <li><a href="#como-funciona" class="nav__link">Cómo Funciona</a></li>
+                <li><a href="#beneficios" class="nav__link">Beneficios</a></li>
+                <li><a href="#equipo" class="nav__link">Equipo</a></li>
+            </ul>
+            <a href="app.html" class="btn btn--primary nav__cta">Ingresar</a>
+            <button class="nav__toggle" id="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="inicio">
+            <div class="container hero__container">
+                <div class="hero__content">
+                    <span class="hero__badge">
+                        <span class="hero__badge-dot"></span>
+                        Citas disponibles ahora
+                    </span>
+                    <h1 class="hero__title">Tu Salud Dental <br><span class="hero__title--accent">No Puede Esperar</span></h1>
+                    <p class="hero__description">Conectamos pacientes que necesitan atención urgente con odontólogos que tienen citas disponibles. Reserva en segundos, ahorra tiempo y dinero.</p>
+                    <div class="hero__buttons">
+                        <a href="app.html" class="btn btn--primary btn--large">
+                            Ingresar a la App
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <a href="#como-funciona" class="btn btn--outline btn--large">Ver cómo funciona</a>
+                    </div>
+                </div>
+                <div class="hero__visual">
+                    <div class="hero__card hero__card--doctor">
+                        <div class="hero__card-header">
+                            <span class="hero__card-icon">🦷</span>
+                            <div>
+                                <p class="hero__card-title">Clínica Sonrisas</p>
+                                <p class="hero__card-subtitle">Dr. Alva</p>
+                            </div>
+                        </div>
+                        <div class="hero__card-body">
+                            <p class="hero__card-service">Limpieza Dental</p>
+                            <p class="hero__card-time">Hoy, 5:00 PM</p>
+                            <p class="hero__card-price">S/ 50.00</p>
+                        </div>
+                        <span class="hero__card-badge">Disponible</span>
+                    </div>
+                    <div class="hero__card hero__card--patient">
+                        <div class="hero__card-check">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <p class="hero__card-message">¡Cita Reservada!</p>
+                        <p class="hero__card-patient-name">Carlos Mendez</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="container">
+                <div class="stats__grid">
+                    <div class="stats__item">
+                        <p class="stats__number" data-count="500">0</p>
+                        <p class="stats__label">Citas recuperadas</p>
+                    </div>
+                    <div class="stats__item">
+                        <p class="stats__number" data-count="150">0</p>
+                        <p class="stats__label">Odontólogos activos</p>
+                    </div>
+                    <div class="stats__item">
+                        <p class="stats__number" data-count="98">0</p>
+                        <p class="stats__label">% Satisfacción</p>
+                    </div>
+                    <div class="stats__item">
+                        <p class="stats__number" data-count="24">0</p>
+                        <p class="stats__label">Horas disponibles</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works Section -->
+        <section class="how-it-works" id="como-funciona">
+            <div class="container">
+                <div class="section__header">
+                    <span class="section__label">Cómo Funciona</span>
+                    <h2 class="section__title">Simple, rápido y efectivo</h2>
+                    <p class="section__description">DocSpot conecta la oferta y demanda de citas odontológicas en tiempo real</p>
+                </div>
+
+                <div class="how-it-works__tabs">
+                    <button class="tab__btn tab__btn--active" data-tab="doctor">Soy Odontólogo</button>
+                    <button class="tab__btn" data-tab="patient">Soy Paciente</button>
+                </div>
+
+                <div class="how-it-works__content">
+                    <!-- Doctor Flow -->
+                    <div class="flow flow--doctor flow--active" id="doctor-flow">
+                        <div class="flow__steps">
+                            <div class="flow__step">
+                                <div class="flow__step-number">1</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Cancelación de cita</h3>
+                                    <p class="flow__step-description">Un paciente cancela su cita programada. En lugar de perder ese espacio, tienes una oportunidad.</p>
+                                </div>
+                            </div>
+                            <div class="flow__step">
+                                <div class="flow__step-number">2</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Publica la disponibilidad</h3>
+                                    <p class="flow__step-description">Con un clic, abre esa cita en DocSpot. Define el servicio, hora y precio con descuento.</p>
+                                </div>
+                            </div>
+                            <div class="flow__step">
+                                <div class="flow__step-number">3</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Recibe pacientes</h3>
+                                    <p class="flow__step-description">Los pacientes cercanos ven tu cita y reservan al instante. Recibes notificación inmediata.</p>
+                                </div>
+                            </div>
+                            <div class="flow__step">
+                                <div class="flow__step-number">4</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Genera ingresos</h3>
+                                    <p class="flow__step-description">Recuperas el ingreso que ibas a perder. Solo pagamos una pequeña comisión de S/ 2 por cita.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Flow -->
+                    <div class="flow flow--patient" id="patient-flow">
+                        <div class="flow__steps">
+                            <div class="flow__step">
+                                <div class="flow__step-number">1</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Necesitas atención</h3>
+                                    <p class="flow__step-description">Tienes dolor dental o necesitas una limpieza urgente. No quieres esperar semanas.</p>
+                                </div>
+                            </div>
+                            <div class="flow__step">
+                                <div class="flow__step-number">2</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Explora citas disponibles</h3>
+                                    <p class="flow__step-description">Entra a DocSpot y ve en tiempo real las citas disponibles cerca de ti, con precios especiales.</p>
+                                </div>
+                            </div>
+                            <div class="flow__step">
+                                <div class="flow__step-number">3</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Reserva al instante</h3>
+                                    <p class="flow__step-description">Elige la cita que mejor te convenga y reserva con un solo clic. Sin llamadas, sin esperas.</p>
+                                </div>
+                            </div>
+                            <div class="flow__step">
+                                <div class="flow__step-number">4</div>
+                                <div class="flow__step-content">
+                                    <h3 class="flow__step-title">Recibe atención</h3>
+                                    <p class="flow__step-description">Llega a tu cita y recibe atención profesional. Tu salud dental no espera más.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits" id="beneficios">
+            <div class="container">
+                <div class="section__header">
+                    <span class="section__label">Beneficios</span>
+                    <h2 class="section__title">Ventajas para todos</h2>
+                    <p class="section__description">DocSpot crea valor tanto para odontólogos como para pacientes</p>
+                </div>
+
+                <div class="benefits__grid">
+                    <!-- Doctor Benefits -->
+                    <div class="benefit__card benefit__card--doctor">
+                        <div class="benefit__card-header">
+                            <div class="benefit__card-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M20 8V14M17 11H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="benefit__card-title">Para Odontólogos</h3>
+                        </div>
+                        <ul class="benefit__list">
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Recupera ingresos por cancelaciones</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Atrae nuevos pacientes a tu clínica</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Comisión mínima de solo S/ 2</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Optimiza el tiempo de tu consultorio</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Panel de control intuitivo</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Patient Benefits -->
+                    <div class="benefit__card benefit__card--patient">
+                        <div class="benefit__card-header">
+                            <div class="benefit__card-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 class="benefit__card-title">Para Pacientes</h3>
+                        </div>
+                        <ul class="benefit__list">
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Citas el mismo día cuando las necesitas</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Precios especiales y descuentos</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Reserva sin llamadas ni esperas</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Profesionales verificados</span>
+                            </li>
+                            <li class="benefit__item">
+                                <svg class="benefit__check" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Tu salud dental no puede esperar</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="container">
+                <div class="cta__content">
+                    <h2 class="cta__title">¿Listo para comenzar?</h2>
+                    <p class="cta__description">Únete a la comunidad DocSpot y transforma la forma en que gestionas tus citas dentales.</p>
+                    <a href="#" class="btn btn--white btn--large">
+                        Ingresar Ahora
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team" id="equipo">
+            <div class="container">
+                <div class="section__header">
+                    <span class="section__label">Nuestro Equipo</span>
+                    <h2 class="section__title">Quiénes somos</h2>
+                    <p class="section__description">Un equipo comprometido con mejorar el acceso a la salud dental</p>
+                </div>
+
+                <div class="team__grid">
+                    <div class="team__member">
+                        <div class="team__member-image">
+                            <img src="/placeholder.svg?height=200&width=200" alt="Desarrollador Principal">
+                        </div>
+                        <h3 class="team__member-name">Juan Smith Valeriano Benites</h3>
+                        <p class="team__member-role">Desarrollador Principal</p>
+                        <p class="team__member-bio">Apasionado por crear soluciones tecnológicas que impacten positivamente en la salud.</p>
+                    </div>
+                    <div class="team__member">
+                        <div class="team__member-image">
+                            <img src="/placeholder.svg?height=200&width=200" alt="Diseñadora UX/UI">
+                        </div>
+                        <h3 class="team__member-name">Adrian Olaf Sánchez Vargas</h3>
+                        <p class="team__member-role">Diseñador UX/UI</p>
+                        <p class="team__member-bio">Creando experiencias intuitivas que conectan pacientes y profesionales.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand">
+                    <a href="#" class="footer__logo">
+                        <svg class="footer__logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.5 2 6 4.5 6 7.5C6 10 7.5 12 9 14C10.5 16 12 18 12 21C12 18 13.5 16 15 14C16.5 12 18 10 18 7.5C18 4.5 15.5 2 12 2Z" fill="currentColor"/>
+                        </svg>
+                        <span>DocSpot Odonto</span>
+                    </a>
+                    <p class="footer__tagline">Tu salud dental no puede esperar.</p>
+                </div>
+                <div class="footer__links">
+                    <div class="footer__column">
+                        <h4 class="footer__column-title">Navegación</h4>
+                        <ul class="footer__list">
+                            <li><a href="#inicio" class="footer__link">Inicio</a></li>
+                            <li><a href="#como-funciona" class="footer__link">Cómo Funciona</a></li>
+                            <li><a href="#beneficios" class="footer__link">Beneficios</a></li>
+                            <li><a href="#equipo" class="footer__link">Equipo</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__column-title">Contacto</h4>
+                        <ul class="footer__list">
+                            <li><a href="mailto:info@docspotodonto.com" class="footer__link">elnegritoojosclaros@gmail.com</a></li>
+                            <li><a href="tel:+51999999999" class="footer__link">+51 903540731</a></li>
+                            <li><span class="footer__link">Trujillo, Perú</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2025 DocSpot Odonto. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

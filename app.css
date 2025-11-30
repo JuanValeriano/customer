@@ -1,7 +1,3 @@
-/* ==========================================
-   DocSpot Odonto - App Styles
-   ========================================== */
-
 /* CSS Variables */
 :root {
   --primary: #0d9488;
@@ -26,7 +22,6 @@
   --radius-full: 9999px;
 }
 
-/* Reset & Base */
 *,
 *::before,
 *::after {
@@ -43,12 +38,10 @@ body {
   min-height: 100vh;
 }
 
-/* App Container */
 .app-container {
   min-height: 100vh;
 }
 
-/* Screens */
 .screen {
   display: none;
   min-height: 100vh;
@@ -58,9 +51,6 @@ body {
   display: block;
 }
 
-/* ==========================================
-   Auth Styles
-   ========================================== */
 .auth-container {
   max-width: 480px;
   margin: 0 auto;
@@ -105,7 +95,6 @@ body {
   color: var(--text-primary);
 }
 
-/* Auth Steps */
 .auth-step {
   display: none;
   flex: 1;
@@ -140,7 +129,6 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Role Cards */
 .role-cards {
   display: flex;
   flex-direction: column;
@@ -202,7 +190,6 @@ body {
   line-height: 1.5;
 }
 
-/* Back Step Button */
 .back-step {
   background: none;
   border: none;
@@ -223,7 +210,6 @@ body {
   color: var(--primary);
 }
 
-/* Form Header */
 .form-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -247,7 +233,6 @@ body {
   background: linear-gradient(135deg, #60a5fa, #3b82f6);
 }
 
-/* Form Styles */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -311,7 +296,6 @@ body {
   color: var(--text-secondary);
 }
 
-/* Buttons */
 .btn-primary {
   background: var(--primary);
   color: white;
@@ -348,7 +332,6 @@ body {
   width: 100%;
 }
 
-/* Auth Divider */
 .auth-divider {
   display: flex;
   align-items: center;
@@ -369,7 +352,6 @@ body {
   padding: 0 1rem;
 }
 
-/* Terms Text */
 .terms-text {
   font-size: 0.75rem;
   color: var(--text-muted);
@@ -386,16 +368,12 @@ body {
   text-decoration: underline;
 }
 
-/* ==========================================
-   Dashboard Common Styles
-   ========================================== */
 .dashboard {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Dashboard Header */
 .dashboard-header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -499,7 +477,6 @@ body {
   color: var(--error);
 }
 
-/* Dashboard Content */
 .dashboard-content {
   flex: 1;
   padding: 2rem 1.5rem;
@@ -508,7 +485,6 @@ body {
   width: 100%;
 }
 
-/* Welcome Section */
 .welcome-section {
   margin-bottom: 2rem;
 }
@@ -524,7 +500,6 @@ body {
   color: var(--text-secondary);
 }
 
-/* Stats Grid */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -578,7 +553,6 @@ body {
   color: var(--text-secondary);
 }
 
-/* Section */
 .section {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -605,7 +579,6 @@ body {
   padding: 1.5rem;
 }
 
-/* Appointment Form */
 .appointment-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -657,7 +630,6 @@ body {
   margin-top: 0.5rem;
 }
 
-/* Appointments List */
 .appointments-list {
   display: flex;
   flex-direction: column;
@@ -761,7 +733,6 @@ body {
   background: #fecaca;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 3rem 1.5rem;
@@ -779,7 +750,6 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* Available Appointments (Patient View) */
 .available-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -886,9 +856,6 @@ body {
   background: var(--primary-dark);
 }
 
-/* ==========================================
-   Toast Notifications
-   ========================================== */
 #toast-container {
   position: fixed;
   top: 1.5rem;
@@ -975,9 +942,6 @@ body {
   padding: 0.25rem;
 }
 
-/* ==========================================
-   Modal
-   ========================================== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -986,12 +950,12 @@ body {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: flex-start; /* Changed from center to flex-start */
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
   animation: fadeIn 0.2s ease;
-  overflow-y: auto; /* Added scroll capability */
+  overflow-y: auto;
 }
 
 .modal {
@@ -999,8 +963,8 @@ body {
   border-radius: var(--radius-lg);
   max-width: 400px;
   width: 100%;
-  margin: auto; /* Centers modal vertically when space available */
-  max-height: calc(100vh - 2rem); /* Limit height */
+  margin: auto;
+  max-height: calc(100vh - 2rem);
   display: flex;
   flex-direction: column;
   animation: scaleIn 0.2s ease;
@@ -1040,7 +1004,7 @@ body {
 
 .modal-body {
   padding: 1.5rem;
-  overflow-y: auto; /* Allow body scroll if content is too long */
+  overflow-y: auto;
   flex: 1;
 }
 
@@ -1052,7 +1016,6 @@ body {
   gap: 0.75rem;
 }
 
-/* Confirmation Modal */
 .confirm-icon {
   width: 64px;
   height: 64px;
@@ -1102,14 +1065,9 @@ body {
   color: var(--text-primary);
 }
 
-/* ==========================================
-   Payment Modal Styles
-   ========================================== */
-
-/* Added payment modal styles */
 .modal-payment {
   max-width: 480px;
-  max-height: calc(100vh - 2rem); /* Ensure payment modal also respects viewport */
+  max-height: calc(100vh - 2rem);
 }
 
 .payment-section {
@@ -1286,10 +1244,6 @@ body {
   }
 }
 
-/* ==========================================
-   Success Modal Styles
-   ========================================== */
-
 .modal-success {
   max-width: 400px;
   text-align: center;
@@ -1415,9 +1369,6 @@ body {
   color: var(--primary);
 }
 
-/* ==========================================
-   Responsive Styles
-   ========================================== */
 @media (max-width: 768px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -1496,7 +1447,6 @@ body {
     width: 100%;
   }
 
-  /* Responsive for payment modal */
   .payment-methods {
     flex-direction: column;
   }

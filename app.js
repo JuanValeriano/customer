@@ -1,8 +1,3 @@
-// ==========================================
-// DocSpot Odonto - Application Logic
-// ==========================================
-
-// State Management
 const AppState = {
   currentUser: null,
   selectedRole: null,
@@ -10,114 +5,77 @@ const AppState = {
   users: [],
 }
 
-// Initialize app
+const API_BASE_URL = "https://docspot-back.onrender.com";
+
+async function makeApiCall(endpoint, method = 'GET', data = null) {
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+
+    let responseData = null;
+    if (response.status !== 204 && response.headers.get('content-type')?.includes('application/json')) {
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        throw new Error(`Respuesta JSON no válida del servidor: ${e.message}`);
+      }
+    }
+
+    if (!response.ok) {
+      let errorDetail = 'Algo salió mal con la llamada a la API.';
+      if (responseData && responseData.detail) {
+        errorDetail = responseData.detail;
+      } else {
+        errorDetail = response.statusText || `Error de API: ${response.status}`;
+      }
+      throw new Error(errorDetail);
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('Error de llamada a la API:', error);
+    showToast('error', 'Error de Conexión', error.message || 'No se pudo conectar al servidor.');
+    throw error;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initializeLocalStorage()
   setupEventListeners()
   checkExistingSession()
 })
-
-// Initialize localStorage with sample data
 function initializeLocalStorage() {
-  // Initialize users if not exists
-  if (!localStorage.getItem("docspot_users")) {
-    const sampleUsers = [
-      {
-        id: "doc_1",
-        username: "doc_alva",
-        password: "123456",
-        role: "doctor",
-        name: "Dr. Carlos Alva",
-        clinic: "Clínica Sonrisas Trujillanas",
-        email: "doc.alva@email.com",
-        phone: "+51 999 111 222",
-      },
-      {
-        id: "doc_2",
-        username: "doc_maria",
-        password: "123456",
-        role: "doctor",
-        name: "Dra. María García",
-        clinic: "Centro Dental Premium",
-        email: "maria.garcia@email.com",
-        phone: "+51 999 333 444",
-      },
-      {
-        id: "pac_1",
-        username: "carlos_m",
-        password: "123456",
-        role: "paciente",
-        name: "Carlos Mendez",
-        email: "carlos.mendez@email.com",
-        phone: "+51 999 555 666",
-      },
-    ]
-    localStorage.setItem("docspot_users", JSON.stringify(sampleUsers))
-  }
 
-  // Initialize appointments if not exists
-  if (!localStorage.getItem("docspot_appointments")) {
-    const sampleAppointments = [
-      {
-        id: "apt_1",
-        doctorId: "doc_1",
-        doctorName: "Dr. Carlos Alva",
-        clinic: "Clínica Sonrisas Trujillanas",
-        service: "Limpieza Dental",
-        time: "5:00 PM",
-        date: getTodayDate(),
-        price: 50,
-        commission: 2,
-        status: "available",
-        patientId: null,
-        patientName: null,
-      },
-      {
-        id: "apt_2",
-        doctorId: "doc_2",
-        doctorName: "Dra. María García",
-        clinic: "Centro Dental Premium",
-        service: "Blanqueamiento",
-        time: "3:00 PM",
-        date: getTodayDate(),
-        price: 150,
-        commission: 2,
-        status: "available",
-        patientId: null,
-        patientName: null,
-      },
-    ]
-    localStorage.setItem("docspot_appointments", JSON.stringify(sampleAppointments))
-  }
-
-  // Load data into state
-  AppState.users = JSON.parse(localStorage.getItem("docspot_users"))
-  AppState.appointments = JSON.parse(localStorage.getItem("docspot_appointments"))
 }
 
-// Get today's date formatted
 function getTodayDate() {
   const today = new Date()
   return today.toLocaleDateString("es-PE", { weekday: "long", day: "numeric", month: "long" })
 }
 
-// Setup event listeners
 function setupEventListeners() {
-  // Role selection
+
   document.querySelectorAll(".role-card").forEach((card) => {
     card.addEventListener("click", () => selectRole(card.dataset.role))
   })
 
-  // Navigation buttons
   document.getElementById("back-to-roles")?.addEventListener("click", showRoleSelection)
   document.getElementById("back-to-login")?.addEventListener("click", showLoginForm)
   document.getElementById("go-to-register")?.addEventListener("click", showRegisterForm)
 
-  // Forms
   document.getElementById("login-form-element")?.addEventListener("submit", handleLogin)
   document.getElementById("register-form-element")?.addEventListener("submit", handleRegister)
 
-  // Password toggles
   document.querySelectorAll(".toggle-password").forEach((btn) => {
     btn.addEventListener("click", function () {
       const input = this.previousElementSibling
@@ -126,7 +84,6 @@ function setupEventListeners() {
   })
 }
 
-// Check for existing session
 function checkExistingSession() {
   const session = localStorage.getItem("docspot_session")
   if (session) {
@@ -140,7 +97,6 @@ function checkExistingSession() {
   }
 }
 
-// Role selection
 function selectRole(role) {
   AppState.selectedRole = role
 
@@ -177,7 +133,6 @@ function selectRole(role) {
   showLoginForm()
 }
 
-// Show/hide auth steps
 function showRoleSelection() {
   document.querySelectorAll(".auth-step").forEach((step) => step.classList.remove("active"))
   document.getElementById("role-selection").classList.add("active")
@@ -193,37 +148,32 @@ function showRegisterForm() {
   document.getElementById("register-form").classList.add("active")
 }
 
-// Handle login
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault()
 
   const username = document.getElementById("login-username").value
   const password = document.getElementById("login-password").value
 
-  const user = AppState.users.find(
-    (u) => u.username === username && u.password === password && u.role === AppState.selectedRole,
-  )
+  try {
+    const userData = await makeApiCall('/login', 'POST', { username, password, role: AppState.selectedRole });
+    AppState.currentUser = userData
+    localStorage.setItem("docspot_session", JSON.stringify(userData))
 
-  if (user) {
-    AppState.currentUser = user
-    localStorage.setItem("docspot_session", JSON.stringify(user))
-
-    showToast("success", "Bienvenido", `Hola ${user.name}`)
+    showToast("success", "Bienvenido", `Hola ${userData.name}`)
 
     setTimeout(() => {
-      if (user.role === "doctor") {
+      if (userData.role === "doctor") {
         showDoctorDashboard()
       } else {
         showPatientDashboard()
       }
     }, 500)
-  } else {
-    showToast("error", "Error", "Usuario o contraseña incorrectos")
+  } catch (error) {
+    showToast("error", "Error", error.message || "Usuario o contraseña incorrectos")
   }
 }
 
-// Handle register
-function handleRegister(e) {
+async function handleRegister(e) {
   e.preventDefault()
 
   const name = document.getElementById("register-name").value
@@ -231,199 +181,204 @@ function handleRegister(e) {
   const email = document.getElementById("register-email").value
   const phone = document.getElementById("register-phone").value
   const password = document.getElementById("register-password").value
-  const clinic = document.getElementById("register-clinic")?.value || ""
+  const clinic = document.getElementById("register-clinic")?.value || null
 
-  // Check if username exists
-  if (AppState.users.find((u) => u.username === username)) {
-    showToast("error", "Error", "El nombre de usuario ya existe")
-    return
-  }
-
-  const newUser = {
-    id: `${AppState.selectedRole === "doctor" ? "doc" : "pac"}_${Date.now()}`,
-    username,
-    password,
-    role: AppState.selectedRole,
+  const userData = {
     name,
+    username,
     email,
     phone,
-    ...(AppState.selectedRole === "doctor" && { clinic }),
+    password,
+    role: AppState.selectedRole,
+    clinic: AppState.selectedRole === "doctor" ? clinic : null,
+  };
+
+  try {
+    const newUser = await makeApiCall('/register', 'POST', userData);
+    AppState.currentUser = newUser
+    localStorage.setItem("docspot_session", JSON.stringify(newUser))
+
+    showToast("success", "Cuenta creada", "Tu cuenta ha sido creada exitosamente")
+
+    setTimeout(() => {
+      if (newUser.role === "doctor") {
+        showDoctorDashboard()
+      } else {
+        showPatientDashboard()
+      }
+    }, 500)
+  } catch (error) {
+    showToast("error", "Error", error.message || "No se pudo crear la cuenta")
+  }
+}
+
+async function showDoctorDashboard() {
+  const user = AppState.currentUser;
+  if (!user || user.role !== "doctor") {
+    showToast("error", "Acceso Denegado", "Debes ser un doctor para ver este panel.");
+    logout();
+    return;
   }
 
-  AppState.users.push(newUser)
-  localStorage.setItem("docspot_users", JSON.stringify(AppState.users))
+  try {
+    const doctorAppointments = await makeApiCall(`/doctors/${user.id}/appointments`);
+    AppState.appointments = doctorAppointments;
 
-  AppState.currentUser = newUser
-  localStorage.setItem("docspot_session", JSON.stringify(newUser))
+    const availableCount = doctorAppointments.filter((apt) => apt.status === "available").length;
+    const reservedCount = doctorAppointments.filter((apt) => apt.status === "reserved").length;
+    const earnings = doctorAppointments
+      .filter((apt) => apt.status === "reserved")
+      .reduce((sum, apt) => sum + (apt.price - apt.commission), 0);
 
-  showToast("success", "Cuenta creada", "Tu cuenta ha sido creada exitosamente")
+    document.getElementById("doctor-dashboard").innerHTML = `
+          <div class="dashboard">
+              <header class="dashboard-header">
+                  <div class="header-content">
+                      <div class="header-left">
+                          <a href="#" class="header-logo">
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                  <path d="M12 2C8 2 6 5 6 8c0 2 1 4 2 5l-1 7c0 1 1 2 2 2h6c1 0 2-1 2-2l-1-7c1-1 2-3 2-5 0-3-2-6-6-6z"/>
+                                  <path d="M9 8h6M12 8v4"/>
+                              </svg>
+                              <span>DocSpot Odonto</span>
+                          </a>
+                      </div>
+                      <div class="header-right">
+                          <div class="user-menu">
+                              <div class="user-avatar">${user.name.charAt(0)}</div>
+                              <div class="user-info">
+                                  <span class="user-name">${user.name}</span>
+                                  <span class="user-role">${user.clinic}</span>
+                              </div>
+                          </div>
+                          <button class="btn-logout" onclick="logout()">Salir</button>
+                      </div>
+                  </div>
+              </header>
+              
+              <main class="dashboard-content">
+                  <div class="welcome-section">
+                      <h1>Panel del Doctor</h1>
+                      <p>Gestiona tus citas disponibles y reservaciones</p>
+                  </div>
+                  
+                  <div class="stats-grid">
+                      <div class="stat-card">
+                          <div class="stat-icon primary">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                  <line x1="16" y1="2" x2="16" y2="6"/>
+                                  <line x1="8" y1="2" x2="8" y2="6"/>
+                                  <line x1="3" y1="10" x2="21" y2="10"/>
+                              </svg>
+                          </div>
+                          <div class="stat-info">
+                              <h3>${availableCount}</h3>
+                              <p>Citas Disponibles</p>
+                          </div>
+                      </div>
+                      <div class="stat-card">
+                          <div class="stat-icon success">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                                  <polyline points="22,4 12,14.01 9,11.01"/>
+                              </svg>
+                          </div>
+                          <div class="stat-info">
+                              <h3>${reservedCount}</h3>
+                              <p>Citas Reservadas</p>
+                          </div>
+                      </div>
+                      <div class="stat-card">
+                          <div class="stat-icon warning">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <line x1="12" y1="1" x2="12" y2="23"/>
+                                  <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                              </svg>
+                          </div>
+                          <div class="stat-info">
+                              <h3>S/ ${earnings}</h3>
+                              <p>Ganancias Hoy</p>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="section">
+                      <div class="section-header">
+                          <h2>Abrir Nueva Cita</h2>
+                      </div>
+                      <div class="section-content">
+                          <form class="appointment-form" id="new-appointment-form">
+                              <div class="form-group">
+                                  <label>Servicio</label>
+                                  <select id="apt-service" required>
+                                      <option value="">Seleccionar servicio</option>
+                                      <option value="Limpieza Dental">Limpieza Dental</option>
+                                      <option value="Blanqueamiento">Blanqueamiento</option>
+                                      <option value="Extracción">Extracción</option>
+                                      <option value="Ortodoncia">Ortodoncia - Consulta</option>
+                                      <option value="Endodoncia">Endodoncia</option>
+                                      <option value="Consulta General">Consulta General</option>
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label>Hora</label>
+                                  <select id="apt-time" required>
+                                      <option value="">Seleccionar hora</option>
+                                      <option value="9:00 AM">9:00 AM</option>
+                                      <option value="10:00 AM">10:00 AM</option>
+                                      <option value="11:00 AM">11:00 AM</option>
+                                      <option value="12:00 PM">12:00 PM</option>
+                                      <option value="3:00 PM">3:00 PM</option>
+                                      <option value="4:00 PM">4:00 PM</option>
+                                      <option value="5:00 PM">5:00 PM</option>
+                                      <option value="6:00 PM">6:00 PM</option>
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label>Precio (S/)</label>
+                                  <input type="number" id="apt-price" placeholder="50" min="10" required>
+                              </div>
+                              <div class="commission-notice">
+                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                      <circle cx="12" cy="12" r="10"/>
+                                      <line x1="12" y1="16" x2="12" y2="12"/>
+                                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                                  </svg>
+                                  <span>La comisión de DocSpot es de S/ 2.00 por cita reservada</span>
+                              </div>
+                              <div class="form-actions">
+                                  <button type="submit" class="btn-primary">
+                                      Publicar Cita
+                                  </button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  
+                  <div class="section">
+                      <div class="section-header">
+                          <h2>Mis Citas de Hoy</h2>
+                      </div>
+                      <div class="section-content">
+                          <div class="appointments-list" id="doctor-appointments-list">
+                              ${renderDoctorAppointments(doctorAppointments)}
+                          </div>
+                      </div>
+                  </div>
+              </main>
+          </div>
+      `
 
-  setTimeout(() => {
-    if (newUser.role === "doctor") {
-      showDoctorDashboard()
-    } else {
-      showPatientDashboard()
-    }
-  }, 500)
+    document.getElementById("new-appointment-form").addEventListener("submit", handleNewAppointment)
+
+    showScreen("doctor-dashboard")
+  } catch (error) {
+    showToast("error", "Error al cargar citas", error.message);
+    logout();
+  }
 }
 
-// Show Doctor Dashboard
-function showDoctorDashboard() {
-  const user = AppState.currentUser
-  const doctorAppointments = AppState.appointments.filter((apt) => apt.doctorId === user.id)
-  const availableCount = doctorAppointments.filter((apt) => apt.status === "available").length
-  const reservedCount = doctorAppointments.filter((apt) => apt.status === "reserved").length
-  const earnings = doctorAppointments
-    .filter((apt) => apt.status === "reserved")
-    .reduce((sum, apt) => sum + (apt.price - apt.commission), 0)
-
-  document.getElementById("doctor-dashboard").innerHTML = `
-        <div class="dashboard">
-            <header class="dashboard-header">
-                <div class="header-content">
-                    <div class="header-left">
-                        <a href="#" class="header-logo">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path d="M12 2C8 2 6 5 6 8c0 2 1 4 2 5l-1 7c0 1 1 2 2 2h6c1 0 2-1 2-2l-1-7c1-1 2-3 2-5 0-3-2-6-6-6z"/>
-                                <path d="M9 8h6M12 8v4"/>
-                            </svg>
-                            <span>DocSpot Odonto</span>
-                        </a>
-                    </div>
-                    <div class="header-right">
-                        <div class="user-menu">
-                            <div class="user-avatar">${user.name.charAt(0)}</div>
-                            <div class="user-info">
-                                <span class="user-name">${user.name}</span>
-                                <span class="user-role">${user.clinic}</span>
-                            </div>
-                        </div>
-                        <button class="btn-logout" onclick="logout()">Salir</button>
-                    </div>
-                </div>
-            </header>
-            
-            <main class="dashboard-content">
-                <div class="welcome-section">
-                    <h1>Panel del Doctor</h1>
-                    <p>Gestiona tus citas disponibles y reservaciones</p>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon primary">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <h3>${availableCount}</h3>
-                            <p>Citas Disponibles</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon success">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                                <polyline points="22,4 12,14.01 9,11.01"/>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <h3>${reservedCount}</h3>
-                            <p>Citas Reservadas</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon warning">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="1" x2="12" y2="23"/>
-                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <h3>S/ ${earnings}</h3>
-                            <p>Ganancias Hoy</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="section-header">
-                        <h2>Abrir Nueva Cita</h2>
-                    </div>
-                    <div class="section-content">
-                        <form class="appointment-form" id="new-appointment-form">
-                            <div class="form-group">
-                                <label>Servicio</label>
-                                <select id="apt-service" required>
-                                    <option value="">Seleccionar servicio</option>
-                                    <option value="Limpieza Dental">Limpieza Dental</option>
-                                    <option value="Blanqueamiento">Blanqueamiento</option>
-                                    <option value="Extracción">Extracción</option>
-                                    <option value="Ortodoncia">Ortodoncia - Consulta</option>
-                                    <option value="Endodoncia">Endodoncia</option>
-                                    <option value="Consulta General">Consulta General</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Hora</label>
-                                <select id="apt-time" required>
-                                    <option value="">Seleccionar hora</option>
-                                    <option value="9:00 AM">9:00 AM</option>
-                                    <option value="10:00 AM">10:00 AM</option>
-                                    <option value="11:00 AM">11:00 AM</option>
-                                    <option value="12:00 PM">12:00 PM</option>
-                                    <option value="3:00 PM">3:00 PM</option>
-                                    <option value="4:00 PM">4:00 PM</option>
-                                    <option value="5:00 PM">5:00 PM</option>
-                                    <option value="6:00 PM">6:00 PM</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Precio (S/)</label>
-                                <input type="number" id="apt-price" placeholder="50" min="10" required>
-                            </div>
-                            <div class="commission-notice">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="12" y1="16" x2="12" y2="12"/>
-                                    <line x1="12" y1="8" x2="12.01" y2="8"/>
-                                </svg>
-                                <span>La comisión de DocSpot es de S/ 2.00 por cita reservada</span>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn-primary">
-                                    Publicar Cita
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="section-header">
-                        <h2>Mis Citas de Hoy</h2>
-                    </div>
-                    <div class="section-content">
-                        <div class="appointments-list" id="doctor-appointments-list">
-                            ${renderDoctorAppointments(doctorAppointments)}
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-    `
-
-  // Setup new appointment form
-  document.getElementById("new-appointment-form").addEventListener("submit", handleNewAppointment)
-
-  showScreen("doctor-dashboard")
-}
-
-// Render doctor appointments
 function renderDoctorAppointments(appointments) {
   if (appointments.length === 0) {
     return `
@@ -470,8 +425,7 @@ function renderDoctorAppointments(appointments) {
     .join("")
 }
 
-// Handle new appointment
-function handleNewAppointment(e) {
+async function handleNewAppointment(e) {
   e.preventDefault()
 
   const user = AppState.currentUser
@@ -479,141 +433,151 @@ function handleNewAppointment(e) {
   const time = document.getElementById("apt-time").value
   const price = Number.parseInt(document.getElementById("apt-price").value)
 
-  const newAppointment = {
-    id: `apt_${Date.now()}`,
-    doctorId: user.id,
-    doctorName: user.name,
+  const newAppointmentData = {
+    doctor_id: user.id,
+    doctor_name: user.name,
     clinic: user.clinic,
     service,
     time,
     date: getTodayDate(),
     price,
     commission: 2,
-    status: "available",
-    patientId: null,
-    patientName: null,
   }
 
-  AppState.appointments.push(newAppointment)
-  localStorage.setItem("docspot_appointments", JSON.stringify(AppState.appointments))
+  try {
+    const createdAppointment = await makeApiCall('/appointments', 'POST', newAppointmentData);
 
-  showToast("success", "Cita Publicada", `Tu cita de ${service} a las ${time} está disponible`)
-
-  // Refresh dashboard
-  showDoctorDashboard()
+    showToast("success", "Cita Publicada", `Tu cita de ${createdAppointment.service} a las ${createdAppointment.time} está disponible`)
+    showDoctorDashboard()
+  } catch (error) {
+    showToast("error", "Error al publicar cita", error.message);
+  }
 }
 
-// Cancel appointment
-function cancelAppointment(id) {
-  AppState.appointments = AppState.appointments.filter((apt) => apt.id !== id)
-  localStorage.setItem("docspot_appointments", JSON.stringify(AppState.appointments))
-
-  showToast("success", "Cita Cancelada", "La cita ha sido eliminada")
-  showDoctorDashboard()
+async function cancelAppointment(id) {
+  try {
+    await makeApiCall(`/appointments/${id}`, 'DELETE');
+    showToast("success", "Cita Cancelada", "La cita ha sido eliminada")
+    showDoctorDashboard()
+  } catch (error) {
+    showToast("error", "Error al cancelar cita", error.message);
+  }
 }
 
-// Show Patient Dashboard
-function showPatientDashboard() {
+async function showPatientDashboard() {
   const user = AppState.currentUser
-  const availableAppointments = AppState.appointments.filter((apt) => apt.status === "available")
-  const myReservations = AppState.appointments.filter((apt) => apt.patientId === user.id)
+  if (!user || user.role !== "paciente") {
+    showToast("error", "Acceso Denegado", "Debes ser un paciente para ver este panel.");
+    logout();
+    return;
+  }
 
-  document.getElementById("patient-dashboard").innerHTML = `
-        <div class="dashboard">
-            <header class="dashboard-header">
-                <div class="header-content">
-                    <div class="header-left">
-                        <a href="#" class="header-logo">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path d="M12 2C8 2 6 5 6 8c0 2 1 4 2 5l-1 7c0 1 1 2 2 2h6c1 0 2-1 2-2l-1-7c1-1 2-3 2-5 0-3-2-6-6-6z"/>
-                                <path d="M9 8h6M12 8v4"/>
-                            </svg>
-                            <span>DocSpot Odonto</span>
-                        </a>
-                    </div>
-                    <div class="header-right">
-                        <div class="user-menu">
-                            <div class="user-avatar" style="background: #3B82F6">${user.name.charAt(0)}</div>
-                            <div class="user-info">
-                                <span class="user-name">${user.name}</span>
-                                <span class="user-role">Paciente</span>
-                            </div>
-                        </div>
-                        <button class="btn-logout" onclick="logout()">Salir</button>
-                    </div>
-                </div>
-            </header>
-            
-            <main class="dashboard-content">
-                <div class="welcome-section">
-                    <h1>Hola, ${user.name.split(" ")[0]}</h1>
-                    <p>Encuentra citas dentales disponibles para hoy</p>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon primary">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <h3>${availableAppointments.length}</h3>
-                            <p>Citas Disponibles</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon success">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                                <polyline points="22,4 12,14.01 9,11.01"/>
-                            </svg>
-                        </div>
-                        <div class="stat-info">
-                            <h3>${myReservations.length}</h3>
-                            <p>Mis Reservaciones</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="section-header">
-                        <h2>Citas Disponibles Hoy</h2>
-                    </div>
-                    <div class="section-content">
-                        <div class="available-grid" id="available-appointments">
-                            ${renderAvailableAppointments(availableAppointments)}
-                        </div>
-                    </div>
-                </div>
-                
-                ${
-                  myReservations.length > 0
-                    ? `
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Mis Reservaciones</h2>
-                        </div>
-                        <div class="section-content">
-                            <div class="appointments-list">
-                                ${renderPatientReservations(myReservations)}
-                            </div>
-                        </div>
-                    </div>
-                `
-                    : ""
-                }
-            </main>
-        </div>
-    `
+  try {
+    const allAppointments = await makeApiCall('/appointments');
+    const availableAppointments = allAppointments.filter((apt) => apt.status === "available");
+    AppState.appointments = allAppointments;
 
-  showScreen("patient-dashboard")
+    const myReservations = await makeApiCall(`/patients/${user.id}/appointments`);
+
+    document.getElementById("patient-dashboard").innerHTML = `
+          <div class="dashboard">
+              <header class="dashboard-header">
+                  <div class="header-content">
+                      <div class="header-left">
+                          <a href="#" class="header-logo">
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                  <path d="M12 2C8 2 6 5 6 8c0 2 1 4 2 5l-1 7c0 1 1 2 2 2h6c1 0 2-1 2-2l-1-7c1-1 2-3 2-5 0-3-2-6-6-6z"/>
+                                  <path d="M9 8h6M12 8v4"/>
+                              </svg>
+                              <span>DocSpot Odonto</span>
+                          </a>
+                      </div>
+                      <div class="header-right">
+                          <div class="user-menu">
+                              <div class="user-avatar" style="background: #3B82F6">${user.name.charAt(0)}</div>
+                              <div class="user-info">
+                                  <span class="user-name">${user.name}</span>
+                                  <span class="user-role">Paciente</span>
+                              </div>
+                          </div>
+                          <button class="btn-logout" onclick="logout()">Salir</button>
+                      </div>
+                  </div>
+              </header>
+              
+              <main class="dashboard-content">
+                  <div class="welcome-section">
+                      <h1>Hola, ${user.name.split(" ")[0]}</h1>
+                      <p>Encuentra citas dentales disponibles para hoy</p>
+                  </div>
+                  
+                  <div class="stats-grid">
+                      <div class="stat-card">
+                          <div class="stat-icon primary">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                  <line x1="16" y1="2" x2="16" y2="6"/>
+                                  <line x1="8" y1="2" x2="8" y2="6"/>
+                                  <line x1="3" y1="10" x2="21" y2="10"/>
+                              </svg>
+                          </div>
+                          <div class="stat-info">
+                              <h3>${availableAppointments.length}</h3>
+                              <p>Citas Disponibles</p>
+                          </div>
+                      </div>
+                      <div class="stat-card">
+                          <div class="stat-icon success">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                                  <polyline points="22,4 12,14.01 9,11.01"/>
+                              </svg>
+                          </div>
+                          <div class="stat-info">
+                              <h3>${myReservations.length}</h3>
+                              <p>Mis Reservaciones</p>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="section">
+                      <div class="section-header">
+                          <h2>Citas Disponibles Hoy</h2>
+                      </div>
+                      <div class="section-content">
+                          <div class="available-grid" id="available-appointments">
+                              ${renderAvailableAppointments(availableAppointments)}
+                          </div>
+                      </div>
+                  </div>
+                  
+                  ${
+                    myReservations.length > 0
+                      ? `
+                      <div class="section">
+                          <div class="section-header">
+                              <h2>Mis Reservaciones</h2>
+                          </div>
+                          <div class="section-content">
+                              <div class="appointments-list">
+                                  ${renderPatientReservations(myReservations)}
+                              </div>
+                          </div>
+                      </div>
+                  `
+                      : ""
+                  }
+              </main>
+          </div>
+      `
+
+    showScreen("patient-dashboard")
+  } catch (error) {
+    showToast("error", "Error al cargar citas", error.message);
+    logout();
+  }
 }
 
-// Render available appointments for patient
 function renderAvailableAppointments(appointments) {
   if (appointments.length === 0) {
     return `
@@ -671,7 +635,6 @@ function renderAvailableAppointments(appointments) {
     .join("")
 }
 
-// Render patient reservations
 function renderPatientReservations(reservations) {
   return reservations
     .map(
@@ -692,7 +655,6 @@ function renderPatientReservations(reservations) {
     .join("")
 }
 
-// Show reserve modal
 function showReserveModal(appointmentId) {
   const apt = AppState.appointments.find((a) => a.id === appointmentId)
   if (!apt) return
@@ -835,20 +797,16 @@ function showReserveModal(appointmentId) {
 
   document.body.appendChild(modal)
 
-  // Setup payment method toggle
   setupPaymentMethodToggle()
 
-  // Setup card input formatting
   setupCardInputFormatting()
 }
 
-// Close modal
 function closeModal() {
   const modal = document.getElementById("reserve-modal")
   if (modal) modal.remove()
 }
 
-// Setup payment method toggle
 function setupPaymentMethodToggle() {
   const methods = document.querySelectorAll(".payment-method input")
   const cardForm = document.getElementById("card-form")
@@ -856,11 +814,10 @@ function setupPaymentMethodToggle() {
 
   methods.forEach((method) => {
     method.addEventListener("change", (e) => {
-      // Update selected state
+
       document.querySelectorAll(".payment-method").forEach((m) => m.classList.remove("selected"))
       e.target.closest(".payment-method").classList.add("selected")
 
-      // Toggle forms
       if (e.target.value === "card") {
         cardForm.style.display = "block"
         yapeForm.style.display = "none"
@@ -872,7 +829,6 @@ function setupPaymentMethodToggle() {
   })
 }
 
-// Setup card input formatting
 function setupCardInputFormatting() {
   const cardNumber = document.getElementById("card-number")
   const cardExpiry = document.getElementById("card-expiry")
@@ -903,12 +859,10 @@ function setupCardInputFormatting() {
   }
 }
 
-// Process payment
 function processPayment(appointmentId) {
   const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value
   const user = AppState.currentUser
 
-  // Validate card inputs if card method selected
   if (selectedMethod === "card") {
     const cardNumber = document.getElementById("card-number").value
     const cardExpiry = document.getElementById("card-expiry").value
@@ -933,7 +887,6 @@ function processPayment(appointmentId) {
     }
   }
 
-  // Show processing state
   const payBtn = document.querySelector(".btn-pay")
   payBtn.disabled = true
   payBtn.innerHTML = `
@@ -943,36 +896,38 @@ function processPayment(appointmentId) {
     Procesando...
   `
 
-  // Simulate payment processing
   setTimeout(() => {
     confirmReservation(appointmentId)
   }, 2000)
 }
 
-// Confirm reservation
-function confirmReservation(appointmentId) {
+async function confirmReservation(appointmentId) {
   const user = AppState.currentUser
-  const aptIndex = AppState.appointments.findIndex((a) => a.id === appointmentId)
+  const apt = AppState.appointments.find((a) => a.id === appointmentId)
 
-  if (aptIndex > -1) {
-    const apt = AppState.appointments[aptIndex]
+  if (!apt) {
+    showToast("error", "Error", "Cita no encontrada.");
+    return;
+  }
 
-    AppState.appointments[aptIndex].status = "reserved"
-    AppState.appointments[aptIndex].patientId = user.id
-    AppState.appointments[aptIndex].patientName = user.name
-    AppState.appointments[aptIndex].paymentStatus = "paid"
-    AppState.appointments[aptIndex].paymentDate = new Date().toISOString()
+  const reservationData = {
+    patient_id: user.id,
+    patient_name: user.name,
+    payment_status: "paid",
+    payment_date: new Date().toISOString(),
+  };
 
-    localStorage.setItem("docspot_appointments", JSON.stringify(AppState.appointments))
+  try {
+    const updatedAppointment = await makeApiCall(`/appointments/${appointmentId}/reserve`, 'POST', reservationData);
 
     closeModal()
 
-    // Show success modal with email notification
-    showSuccessModal(apt)
+    showSuccessModal(updatedAppointment)
+  } catch (error) {
+    showToast("error", "Error al reservar cita", error.message);
   }
 }
 
-// Show success modal with email notification
 function showSuccessModal(apt) {
   const user = AppState.currentUser
 
@@ -1056,19 +1011,16 @@ function closeSuccessAndRefresh() {
   showPatientDashboard()
 }
 
-// Show screen
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"))
   document.getElementById(screenId).classList.add("active")
 }
 
-// Logout
 function logout() {
   localStorage.removeItem("docspot_session")
   AppState.currentUser = null
   AppState.selectedRole = null
 
-  // Reset forms
   document.getElementById("login-form-element")?.reset()
   document.getElementById("register-form-element")?.reset()
 
@@ -1078,7 +1030,6 @@ function logout() {
   showToast("success", "Sesión cerrada", "Has cerrado sesión correctamente")
 }
 
-// Toast notification
 function showToast(type, title, message) {
   const container = document.getElementById("toast-container")
   const toast = document.createElement("div")

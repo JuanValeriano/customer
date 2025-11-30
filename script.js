@@ -1,4 +1,3 @@
-// ===== DOM Elements =====
 const header = document.getElementById("header")
 const navToggle = document.getElementById("nav-toggle")
 const navMenu = document.getElementById("nav-menu")
@@ -8,7 +7,6 @@ const doctorFlow = document.getElementById("doctor-flow")
 const patientFlow = document.getElementById("patient-flow")
 const statsNumbers = document.querySelectorAll(".stats__number")
 
-// ===== Header Scroll Effect =====
 function handleScroll() {
   if (window.scrollY > 50) {
     header.classList.add("scrolled")
@@ -19,13 +17,11 @@ function handleScroll() {
 
 window.addEventListener("scroll", handleScroll)
 
-// ===== Mobile Navigation =====
 navToggle.addEventListener("click", () => {
   navToggle.classList.toggle("active")
   navMenu.classList.toggle("active")
 })
 
-// Close menu when clicking a link
 navLinks.forEach((link) => {
   link.addEventListener("click", () => {
     navToggle.classList.remove("active")
@@ -33,7 +29,6 @@ navLinks.forEach((link) => {
   })
 })
 
-// Close menu when clicking outside
 document.addEventListener("click", (e) => {
   if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
     navToggle.classList.remove("active")
@@ -41,16 +36,12 @@ document.addEventListener("click", (e) => {
   }
 })
 
-// ===== Tab Functionality =====
 tabBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    // Remove active class from all buttons
     tabBtns.forEach((b) => b.classList.remove("tab__btn--active"))
 
-    // Add active class to clicked button
     btn.classList.add("tab__btn--active")
 
-    // Show/hide flows based on tab
     const tab = btn.getAttribute("data-tab")
 
     if (tab === "doctor") {
@@ -63,7 +54,6 @@ tabBtns.forEach((btn) => {
   })
 })
 
-// ===== Counter Animation =====
 function animateCounter(el) {
   const target = Number.parseInt(el.getAttribute("data-count"))
   const duration = 2000
@@ -81,7 +71,6 @@ function animateCounter(el) {
   }, 16)
 }
 
-// ===== Intersection Observer for Counter Animation =====
 const observerOptions = {
   threshold: 0.5,
   rootMargin: "0px",
@@ -101,7 +90,6 @@ if (statsSection) {
   statsObserver.observe(statsSection)
 }
 
-// ===== Smooth Scroll for Anchor Links =====
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault()
@@ -123,7 +111,6 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   })
 })
 
-// ===== Active Navigation Link on Scroll =====
 const sections = document.querySelectorAll("section[id]")
 
 function highlightNavLink() {
@@ -147,7 +134,6 @@ function highlightNavLink() {
 
 window.addEventListener("scroll", highlightNavLink)
 
-// ===== Fade In Animation on Scroll =====
 const fadeElements = document.querySelectorAll(".benefit__card, .team__member, .flow__step")
 
 const fadeObserver = new IntersectionObserver(
@@ -172,9 +158,8 @@ fadeElements.forEach((el) => {
   fadeObserver.observe(el)
 })
 
-// ===== Initialize =====
 document.addEventListener("DOMContentLoaded", () => {
-  // Check initial scroll position
+
   handleScroll()
   highlightNavLink()
 })
